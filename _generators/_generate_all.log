@@ -1,0 +1,10 @@
+
+F:\_github\umba-tools\marty_hex_test\_libs\marty_svg\_generators>umba-enum-gen --enum-values-style=CamelStyle --hex-width=2 --override-template-parameter=EnumNameFormat:$(ENAMNAME) --enum-flags=0 --enum-flags=type-decl,serialize,deserialize,lowercase,enum-class,fmt-hex --enum-values-style=CamelStyle --serialize-style=PascalStyle --enum-serialize-style=All                  --enum-flags=flags                                                                                --underlaying-type=std::uint32_t --hex-width=4 -E=RoundRectFlags                -F=@RoundRectFlags.txt            ..\enums.h 
+Umba Enum's Genertor version 1.01
+Windows/x86
+Built with MSVC v19.29.30154 compiler
+Built at Jan 28 2025 00:58:25
+Found project umba-enum-gen flags file: F:\_github\umba-tools\marty_hex_test\_libs\marty_svg\_generators\umba-enum-gen-options.txt
+Current working dir: F:\_github\umba-tools\marty_hex_test\_libs\marty_svg\_generators
+Writting output to : F:\_github\umba-tools\marty_hex_test\_libs\marty_svg\_generators\..\enums.h
+umba-enum-gen: Done

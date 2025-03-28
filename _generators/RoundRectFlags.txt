@@ -1,0 +1,15 @@
+invalid,unknown     = -1
+
+none                = 0
+
+roundLeftTop        = 0x01 // Left top angle is round
+roundLeftBottom     = 0x02 // Left bottom angle is round
+roundRightTop       = 0x04 // Right top angle is round
+roundRightBottom    = 0x08 // Right bottom angle is round
+
+roundLeft           = roundLeftTop    | roundLeftBottom    // Left side angles are round
+roundRight          = roundRightTop   | roundRightBottom   // Right side angles are round
+roundTop            = roundLeftTop    | roundRightTop      // Top side angles are round
+roundBottom         = roundLeftBottom | roundRightBottom   // Bottom side angles are round
+
+round               = roundLeft | roundRight // All angles are round

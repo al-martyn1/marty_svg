@@ -5,6 +5,8 @@
 #pragma once
 
 //----------------------------------------------------------------------------
+#include "enums.h"
+//
 #include <cstdint>
 #include <iterator>
 
@@ -130,6 +132,8 @@ void pathEnd(StreamType &oss, bool closePath=true)
 }
 
 //----------------------------------------------------------------------------
+
+
 template<typename StreamType>
 void drawRect( StreamType &oss
              , int  posX , int posY
