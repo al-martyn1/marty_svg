@@ -98,6 +98,34 @@ void pathStart(StreamType &oss, int posX, int posY, const std::string &pathClass
 
 //----------------------------------------------------------------------------
 template<typename StreamType>
+void pathStart( StreamType &oss, int posX, int posY
+              , int strokeWidth, const std::string &strokeColor
+              , const std::string &fillColor=std::string() /* no fill if empty */
+              , std::string linejoin=std::string() /* no fill if empty */
+              , bool bAbs=false )
+{
+
+    oss << "<path ";
+    oss << "stroke=\"" << escapeText(strokeColor) << "\" ";
+    oss << "stroke-width=\"" << strokeWidth << "\" ";
+    if (linejoin.empty())
+        linejoin = "miter";
+    oss << "stroke-linejoin=\"" << linejoin << "\" ";
+
+    if (!fillColor.empty())
+    {
+        oss << "fill=\"" << escapeText(fillColor) << "\" ";
+    }
+    else
+    {
+        oss << "fill-opacity=\"0\" "; // Непрозрачность - нулевая
+    }
+
+    oss << "d=\"" << (bAbs?'M':'m') << " " << posX << " " << posY;
+}
+
+//----------------------------------------------------------------------------
+template<typename StreamType>
 void pathLineTo(StreamType &oss, int posX, int posY, bool bAbs=false)
 {
     oss << " " << (bAbs?'L':'l') << " " << posX << " " << posY;
@@ -132,6 +160,168 @@ void pathEnd(StreamType &oss, bool closePath=true)
 }
 
 //----------------------------------------------------------------------------
+template<typename StreamType>
+void drawRectEx( StreamType &oss
+               , int  posX , int posY
+               , int  sizeX, int sizeY
+               , int r
+               , int strokeWidth
+               , const std::string &strokeColor
+               , const std::string &fillColor = std::string() // no fill if empty
+               , RoundRectFlags flags=RoundRectFlags::round /* для отладки */  // RoundRectFlags::none
+               )
+{
+
+    // stroke="blue"
+    // fill="purple"
+    // fill-opacity="0.5"
+    // stroke-opacity="0.8"
+    // stroke-width="15" />
+
+    //void pathStart(StreamType &oss, int posX, int posY, const std::string &pathClass=std::string(), bool bAbs=false )
+
+    int cntTopR     = 0;
+    int cntBottomR  = 0;
+    int cntLeftR    = 0;
+    int cntRightR   = 0;
+
+    // int cntHorzR    = 0;
+    // int cntVertR    = 0;
+
+    if ((flags&RoundRectFlags::roundLeftTop)!=0)
+    {
+        ++cntLeftR;
+        ++cntTopR ;
+        // ++cntHorzR;
+        // ++cntVertR;
+    }
+
+    if ((flags&RoundRectFlags::roundLeftBottom)!=0)
+    {
+        ++cntLeftR;
+        ++cntBottomR;
+    }
+
+    if ((flags&RoundRectFlags::roundRightTop)!=0)
+    {
+        ++cntRightR;
+        ++cntTopR;
+    }
+
+    if ((flags&RoundRectFlags::roundRightBottom)!=0)
+    {
+        ++cntRightR;
+        ++cntBottomR;
+    }
+
+    if ((flags&RoundRectFlags::roundLeft)==RoundRectFlags::roundLeft)
+    {
+        // Только слева
+        // Нас интересует только высота
+        r = std::min(r, sizeY);
+    }
+    else if ((flags&RoundRectFlags::roundRight)==RoundRectFlags::roundRight)
+    {
+        // Только справа
+        // Нас интересует только высота
+        r = std::min(r, sizeY);
+    }
+    else if ((flags&RoundRectFlags::roundTop)==RoundRectFlags::roundTop)
+    {
+        // Только сверху
+        // Нас интересует только ширина
+        r = std::min(r, sizeX);
+    }
+    else if ((flags&RoundRectFlags::roundBottom)==RoundRectFlags::roundBottom)
+    {
+        // Только снизу
+        // Нас интересует только ширина
+        r = std::min(r, sizeX);
+    }
+    else
+    {
+        int maxCntR = std::max({cntTopR, cntBottomR, cntLeftR, cntRightR });
+        if (maxCntR)
+        {
+            r = std::min({r, sizeX/maxCntR, sizeY/maxCntR});
+        }
+    }
+    // int cntHorzR    = 0;
+    // int cntVertR    = 0;
+
+    // roundLeft          = roundLeftTop    | roundLeftBottom /*!< Left side angles are round */,
+    // roundRight         = roundRightTop   | roundRightBottom /*!< Right side angles are round */,
+    // roundTop           = roundLeftTop    | roundRightTop /*!< Top side angles are round */,
+    // roundBottom        = roundLeftBottom | roundRightBottom /*!< Bottom side angles are round */,
+
+    int topSizeX    = sizeX;
+    int bottomSizeX = sizeX;
+    int leftSizeY   = sizeY;
+    int rightSizeY  = sizeY;
+
+    if ((flags&RoundRectFlags::roundLeftTop)!=0)
+    {
+        leftSizeY   -= r;
+        topSizeX    -= r;
+    }
+
+    if ((flags&RoundRectFlags::roundLeftBottom)!=0)
+    {
+        leftSizeY   -= r;
+        bottomSizeX -= r;
+    }
+
+    if ((flags&RoundRectFlags::roundRightTop)!=0)
+    {
+        rightSizeY  -= r;
+        topSizeX    -= r;
+    }
+
+    if ((flags&RoundRectFlags::roundRightBottom)!=0)
+    {
+        rightSizeY  -= r;
+        bottomSizeX -= r;
+    }
+
+
+    // У нас есть координата верхнего левого угла прямоугольника
+    // Начинаем с него
+    if ((flags&RoundRectFlags::roundLeftTop)!=0)
+    {
+        pathStart(oss, posX, posY+r, strokeWidth, strokeColor, fillColor, std::string(), true /* bAbs */ );
+        pathQuadraticBezier(oss, 0, -r, r, -r);
+    }
+    else
+    {
+        pathStart(oss, posX, posY, strokeWidth, strokeColor, fillColor, std::string(), true /* bAbs */ );
+    }
+
+    pathHorzLineTo(oss, topSizeX);
+
+    if ((flags&RoundRectFlags::roundRightTop)!=0)
+    {
+        pathQuadraticBezier(oss, r, 0, r, r);
+    }
+
+    pathVertLineTo(oss, rightSizeY);
+
+    if ((flags&RoundRectFlags::roundRightBottom)!=0)
+    {
+        pathQuadraticBezier(oss, 0, r, -r, r);
+    }
+
+    pathHorzLineTo(oss, -bottomSizeX);
+
+    if ((flags&RoundRectFlags::roundLeftBottom)!=0)
+    {
+        pathQuadraticBezier(oss, -r, 0, -r, -r);
+    }
+
+    pathVertLineTo(oss, -leftSizeY);
+
+    pathEnd(oss, true /* closePath */ );
+
+}
 
 
 template<typename StreamType>
@@ -211,12 +401,32 @@ void drawRect( StreamType &oss
 //----------------------------------------------------------------------------
 template<typename StreamType>
 void drawLine( StreamType &oss
-             , int  startX, int startY
-             , int  endX  , int endY
+             , int startX, int startY
+             , int endX  , int endY
              , const std::string &lineClass
              )
 {
     oss << "<line x1=\"" << startX << "\" y1=\"" << startY << "\" x2=\"" << endX << "\" y2=\"" << endY << "\" class=\"" << lineClass << "\"/>\n";
+}
+
+//----------------------------------------------------------------------------
+template<typename StreamType>
+void drawLine( StreamType &oss
+             , int startX, int startY
+             , int endX  , int endY
+             , int strokeWidth
+             , const std::string &strokeColor
+              , std::string linejoin=std::string() /* no fill if empty */
+             )
+{
+    oss << "<line x1=\"" << startX << "\" y1=\"" << startY << "\" x2=\"" << endX << "\" y2=\"" << endY << "\" ";
+    oss << "stroke=\"" << escapeText(strokeColor) << "\" ";
+    oss << "stroke-width=\"" << strokeWidth << "\" ";
+    if (linejoin.empty())
+        linejoin = "miter";
+    oss << "stroke-linejoin=\"" << linejoin << "\" ";
+    
+    oss << " />\n";
 }
 
 //----------------------------------------------------------------------------

@@ -25,7 +25,9 @@ enum class RoundRectFlags : std::uint32_t
 {
     invalid            = (std::uint32_t)(-1) /*!<  */,
     unknown            = (std::uint32_t)(-1) /*!<  */,
-    none               = 0x0000 /*!<  */,
+    none               = 0x0000 /*!< No round rect angles at all */,
+    noRound            = 0x0000 /*!< No round rect angles at all */,
+    roundNone          = 0x0000 /*!< No round rect angles at all */,
     roundLeftTop       = 0x0001 /*!< Left top angle is round */,
     roundLeftBottom    = 0x0002 /*!< Left bottom angle is round */,
     roundRightTop      = 0x0004 /*!< Right top angle is round */,
@@ -61,7 +63,13 @@ MARTY_CPP_ENUM_FLAGS_DESERIALIZE_BEGIN( RoundRectFlags, std::map, 1 )
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::roundRightBottom   , "round_right_bottom" );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::invalid            , "invalid"            );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::invalid            , "unknown"            );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "no-round"           );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "none"               );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "roundnone"          );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "no_round"           );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "noround"            );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "round-none"         );
+    MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::none               , "round_none"         );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::roundLeftTop       , "round-left-top"     );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::roundLeftTop       , "round_left_top"     );
     MARTY_CPP_ENUM_FLAGS_DESERIALIZE_ITEM( RoundRectFlags::roundLeftTop       , "roundlefttop"       );

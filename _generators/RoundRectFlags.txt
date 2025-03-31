@@ -1,6 +1,6 @@
 invalid,unknown     = -1
 
-none                = 0
+none,noRound,roundNone        = 0 // No round rect angles at all
 
 roundLeftTop        = 0x01 // Left top angle is round
 roundLeftBottom     = 0x02 // Left bottom angle is round
