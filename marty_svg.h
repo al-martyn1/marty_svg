@@ -85,6 +85,11 @@ void writeSvg( StreamType &oss
 }
 
 //----------------------------------------------------------------------------
+// https://www.w3schools.com/graphics/svg_path.asp
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorials/SVG_from_scratch/Paths
+// https://svg-art.ru/?page_id=897
+
+//----------------------------------------------------------------------------
 template<typename StreamType>
 void pathStart(StreamType &oss, int posX, int posY, const std::string &pathClass=std::string(), bool bAbs=false )
 {
@@ -149,7 +154,22 @@ void pathVertLineTo(StreamType &oss, int posY, bool bAbs=false)
 template<typename StreamType>
 void pathQuadraticBezier(StreamType &oss, int cpX, int cpY, int endX, int endY, bool bAbs=false)
 {
-    oss << " " << (bAbs?'Q':'q') << " " << cpX << " " << cpY << " " << endX << " " << endY;
+    oss << " " << (bAbs?'Q':'q') << " " << cpX << " " << cpY << ", " << endX << " " << endY;
+}
+
+//----------------------------------------------------------------------------
+// https://svg-art.ru/?page_id=907#comm_cubic
+template<typename StreamType>
+void pathCubicBezier(StreamType &oss, int cpX1, int cpY1, int cpX2, int cpY2, int endX, int endY, bool bAbs=false)
+{
+    oss << " " << (bAbs?'Q':'q') << " " << cpX1 << " " << cpY1 << ", " << cpX2 << " " << cpY2 << ", " << endX << " " << endY;
+}
+
+//----------------------------------------------------------------------------
+template<typename StreamType>
+void pathSmoothCubicBezier(StreamType &oss, int cpX, int cpY, int endX, int endY, bool bAbs=false)
+{
+    oss << " " << (bAbs?'S':'s') << " " << cpX << " " << cpY << ", " << endX << " " << endY;
 }
 
 //----------------------------------------------------------------------------
